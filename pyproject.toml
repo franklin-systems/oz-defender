@@ -2,9 +2,9 @@
 name = "oz-defender"
 version = "0.1.0"
 description = ""
-authors = ["Shaan Savarirayan <shaan.savarirayan@gmail.com>"]
+authors = ["Franklin <contact@hellofranklin.co>"]
 readme = "README.md"
-packages = [{include = "oz_defender"}]
+packages = [{include = "oz-defender"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
