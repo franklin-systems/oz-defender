@@ -1,13 +1,34 @@
+[project]
+name = "oz-defender"
+
 [tool.poetry]
 name = "oz-defender"
 version = "0.1.0"
 description = ""
 authors = ["Franklin <contact@hellofranklin.co>"]
+license = "MIT"
 readme = "README.md"
-packages = [{include = "oz-defender"}]
+homepage = "https://github.com/franklin-systems/oz-defender"
+repository = "https://github.com/franklin-systems/oz-defender"
+packages = [
+    {include = "oz-defender"}
+]
+keywords = [
+    "openzeppelin",
+    "open zeppelin",
+    "oz",
+    "defender",
+    "ethereum",
+    "relayer",
+    "gasless",
+    "api",
+]
 
 [tool.poetry.dependencies]
 python = "^3.10"
+
+[tool.poetry.dev-dependencies]
+pytest = "^7.3.1"
 
 
 [build-system]
