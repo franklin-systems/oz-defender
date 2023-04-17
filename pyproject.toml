@@ -1,9 +1,10 @@
 [project]
 name = "oz-defender"
+description = "OpenZeppelin Defender API client"
 
 [tool.poetry]
 name = "oz-defender"
-version = "0.1.0"
+version = "0.0.1"
 description = ""
 authors = ["Franklin <contact@hellofranklin.co>"]
 license = "MIT"
@@ -11,7 +12,7 @@ readme = "README.md"
 homepage = "https://github.com/franklin-systems/oz-defender"
 repository = "https://github.com/franklin-systems/oz-defender"
 packages = [
-    {include = "oz-defender"}
+    {include = "oz_defender"}
 ]
 keywords = [
     "openzeppelin",
