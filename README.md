@@ -22,7 +22,9 @@ To make it as simple as possible for us to help you, please include the followin
 - OS
 - python version
 - `oz-defender` version
+
 ### Pull requests
+**Note: Unless the change you're making is minor, please open an issue in GitHub to discuss a change before opening a PR**
 1. Clone this repository
 ```bash
 git clone https://github.com/franklin-systems/oz-defender
