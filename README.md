@@ -13,7 +13,7 @@ poetry add oz-defender
 ```
 
 ## Usage
-This packages is intended to mirror as much as possible the [defender-relay-client](https://github.com/OpenZeppelin/defender-client/tree/e19212ddd87ba1a82f831498340ab4e31734803f/packages/relay) JavaScript package to reduce confusion.
+This packages is intended to mirror as closely as possible the [defender-relay-client](https://github.com/OpenZeppelin/defender-client/tree/e19212ddd87ba1a82f831498340ab4e31734803f/packages/relay) JavaScript package to provide a unified API across languages.
 
 For the [Relay API](https://docs.openzeppelin.com/defender/relay-api-reference#relay-client-module), used for administrating your team's relayers:
 ```python
