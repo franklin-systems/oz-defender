@@ -8,6 +8,20 @@ from .exceptions import RelayException, RelayTimeoutError
 
 
 class BaseClient:
+    def __init__(
+        self,
+        api_key: str,
+        api_secret: str,
+        aws_user_pool_id: str,
+        aws_client_id: str,
+        aws_srp_pool_region: str,
+    ):
+        self.api_key = api_key
+        self.api_secret = api_secret
+        self.aws_user_pool_id = aws_user_pool_id
+        self.aws_client_id = aws_client_id
+        self.aws_srp_pool_region = aws_srp_pool_region
+
     @property
     def headers(self) -> dict:
         return {
@@ -106,11 +120,13 @@ class RelayClient(BaseClient):
         aws_client_id: str = "40e58hbc7pktmnp9i26hh5nsav",
         aws_srp_pool_region: str = "us-west-2",
     ):
-        self.api_key = api_key
-        self.api_secret = api_secret
-        self.aws_user_pool_id = aws_user_pool_id
-        self.aws_client_id = aws_client_id
-        self.aws_srp_pool_region = aws_srp_pool_region
+        super().__init__(
+            api_key,
+            api_secret,
+            aws_user_pool_id,
+            aws_client_id,
+            aws_srp_pool_region,
+        )
         self.base_api = "https://defender-api.openzeppelin.com/relayer/"
 
     def get_relayer(self, relayer_id: str) -> requests.Response:
@@ -173,14 +189,17 @@ class RelayerClient(BaseClient):
         aws_user_pool_id: str = "us-west-2_iLmIggsiy",
         aws_client_id: str = "1bpd19lcr33qvg5cr3oi79rdap",
         aws_srp_pool_region: str = "us-west-2",
+        json_rpc_request_id: int = 0,
     ):
-        self.api_key = api_key
-        self.api_secret = api_secret
-        self.aws_user_pool_id = aws_user_pool_id
-        self.aws_client_id = aws_client_id
-        self.aws_srp_pool_region = aws_srp_pool_region
+        super().__init__(
+            api_key,
+            api_secret,
+            aws_user_pool_id,
+            aws_client_id,
+            aws_srp_pool_region,
+        )
         self.base_api = "https://api.defender.openzeppelin.com/"
-        self.json_rpc_request_id = 0
+        self.json_rpc_request_id = json_rpc_request_id
 
     def get_relayer(self) -> requests.Response:
         response = self.get("relayer")
