@@ -18,7 +18,7 @@ blah blah
 ## Contributing
 `oz-defender` is under active development so we welcome any and all contributions to improve the package!
 ### Issues
-To make it as simple as possible for us to help you, please include the following when (creating an issue)[https://github.com/franklin-systems/oz-defender/issues]:
+To make it as simple as possible for us to help you, please include the following when [creating an issue](https://github.com/franklin-systems/oz-defender/issues):
 - OS
 - python version
 - `oz-defender` version
