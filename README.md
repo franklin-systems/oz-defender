@@ -4,12 +4,12 @@ Package for interacting with Open Zeppelin's Defender API
 ## Installation
 Using `pip`
 ```bash
-pip install oz-defender
+$ pip install oz-defender
 ```
 
 Using `poetry`
 ```bash
-poetry add oz-defender
+$ poetry add oz-defender
 ```
 
 ## Usage
@@ -42,26 +42,46 @@ To make it as simple as possible for us to help you, please include the followin
 - python version
 - `oz-defender` version
 
-### Pull requests
-**Note: Unless the change you're making is minor, please open an issue in GitHub to discuss a change before opening a PR**
+**NOTE: Unless the change you're making is minor, please open an issue in GitHub to discuss a change before opening a PR**
+
+### Development
 1. Clone this repository
 ```bash
-git clone https://github.com/franklin-systems/oz-defender
+$ git clone https://github.com/franklin-systems/oz-defender
 ```
 2. Install `pre-commit` and its hooks
 ```bash
-pip install pre-commit
+$ pip install pre-commit
 ```
 or if you're using macOS
 ```bash
-brew install pre-commit
+$ brew install pre-commit
 ```
 then
 ```bash
-pre-commit install
+$ pre-commit install
 ```
 3. Check out a new branch
 ```bash
-git checkout my-new-feature-branch
+$ git checkout my-new-feature-branch
 ```
 4. Commit and create your PR with a detailed description and tag the GitHub issue that your work addresses
+
+### Testing `oz_defender` locally
+1. Update deps
+```bash
+$ poetry update
+```
+2. Initialize a shell in `poetry` virtual env
+```bash
+$ poetry shell
+```
+3. Enter a python repl
+```bash
+(oz-defender-py3.10) $ python3
+```
+4. Import `oz_defender` and off you go
+```python
+>>> from oz_defender import *
+```
+5. Quite the python repl and re-initialize to pick up code changes as you develop
