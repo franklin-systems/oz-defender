@@ -1,27 +1,10 @@
-import typing
-import uuid
-
 import requests
 from pycognito.utils import RequestsSrpAuth
 
-from .exceptions import RelayException, RelayTimeout
+from .exceptions import RelayException, RelayTimeoutError
 
 
 class BaseClient:
-    def __init__(
-        self,
-        api_key: str,
-        api_secret: str,
-        aws_user_pool_id: str,
-        aws_client_id: str,
-        aws_srp_pool_region: str,
-    ):
-        self.api_key = api_key
-        self.api_secret = api_secret
-        self.aws_user_pool_id = aws_user_pool_id
-        self.aws_client_id = aws_client_id
-        self.aws_srp_pool_region = aws_srp_pool_region
-
     @property
     def headers(self):
         return {
@@ -50,11 +33,11 @@ class BaseClient:
                 timeout=60,
             )
         except requests.ReadTimeout:
-            raise RelayTimeout(f"GET: {self.base_api + path}")
+            raise RelayTimeoutError(f"GET: {self.base_api + path}")
 
         return response
 
-    def post(self, path, payload):
+    def post(self, path, payload=None):
         try:
             response = requests.post(
                 self.base_api + path,
@@ -64,18 +47,51 @@ class BaseClient:
                 timeout=60,
             )
         except requests.ReadTimeout:
-            raise RelayTimeout(f"POST: {self.base_api + path}")
+            raise RelayTimeoutError(f"POST: {self.base_api + path}")
 
         return response
 
-    def relayer_exception(self, response: requests.Response):
+    def put(self, path, payload=None):
+        try:
+            response = requests.put(
+                self.base_api + path,
+                json=payload,
+                headers=self.headers,
+                auth=self.auth,
+                timeout=60,
+            )
+        except requests.ReadTimeout:
+            raise RelayTimeoutError(f"PUT: {self.base_api + path}")
+
+        return response
+
+    def delete(self, path):
+        try:
+            response = requests.delete(
+                self.base_api + path,
+                headers=self.headers,
+                auth=self.auth,
+                timeout=60,
+            )
+        except requests.ReadTimeout:
+            raise RelayTimeoutError(f"DELETE: {self.base_api + path}")
+
+        return response
+
+    def _handle_response(self, response: requests.Response):
+        if not response.ok:
+            raise self._relayer_exception(response)
+
+        return response.json()
+
+    def _relayer_exception(self, response: requests.Response):
         # TODO: @ssavarirayan add status code parsing and raise specific exceptions
         try:
-            message = response["message"]
+            message = response.json()["message"]
             return RelayException(message)
         except:
             # if error parsing fails, return the entire response
-            return RelayException(response)
+            return RelayException(response.json())
 
 
 class RelayClient(BaseClient):
@@ -87,88 +103,63 @@ class RelayClient(BaseClient):
         aws_client_id: str = "40e58hbc7pktmnp9i26hh5nsav",
         aws_srp_pool_region: str = "us-west-2",
     ):
-        super().__init__(
-            api_key,
-            api_secret,
-            aws_user_pool_id,
-            aws_client_id,
-            aws_srp_pool_region,
-        )
+        self.api_key = api_key
+        self.api_secret = api_secret
+        self.aws_user_pool_id = aws_user_pool_id
+        self.aws_client_id = aws_client_id
+        self.aws_srp_pool_region = aws_srp_pool_region
         self.base_api = "https://defender-api.openzeppelin.com/relayer/"
+
+    def get_relayer(self, relayer_id):
+        response = self.get(f"relayers/{relayer_id}")
+
+        return self._handle_response(response)
 
     def list_relayers(self):
         response = self.get("relayers/summary")
 
-        if not response.ok:
-            raise self.relayer_exception(response)
+        return self._handle_response(response)
 
-        return response.json()
+    def list_relayer_keys(self, relayer_id: str):
+        response = self.get(f"relayers/{relayer_id}/keys")
 
-    def list_relayer_keys(self, relayer_id: uuid.UUID):
-        response = self.get("relayers/keys")
+        return self._handle_response(response)
 
-        if not response.ok:
-            raise self.relayer_exception(response)
+    def create_relayer(self, data: dict) -> dict:
+        response = self.post("relayers", data)
 
-        return response.json()
+        return self._handle_response(response)
 
-    def create_relayer(
-        self,
-        name: str,
-        network: str,
-        min_balance: int = int(1e17),
-        gas_price_cap: int = None,
-        whitelist_receivers: typing.List = [],
-        eip1559_pricing: bool = False,
-        private_transactions: bool = False,
-        use_address_from_relayer_id: str = None,
-    ):
+    def create_relayer_key(self, relayer_id: str) -> dict:
+        response = self.post(f"relayers/{relayer_id}/keys")
 
-        if use_address_from_relayer_id and any(
-            [gas_price_cap, whitelist_receivers, eip1559_pricing, private_transactions]
-        ):
-            raise ValueError(
-                "use_address_from_relayer_id cannot be used with other policies"
-            )
+        return self._handle_response(response)
 
-        if use_address_from_relayer_id:
-            payload = {
-                "name": name,
-                "network": network,
-                "minBalance": min_balance,
-                "useAddressFromRelayerId": use_address_from_relayer_id,
-            }
-        else:
-            payload = {
-                "name": name,
-                "network": network,
-                "minBalance": min_balance,
-                "policies": {
-                    "gasPriceCap": gas_price_cap,
-                    "whitelistReceivers": whitelist_receivers,
-                    "eip1559Pricing": eip1559_pricing,
-                    "privateTransactions": private_transactions,
-                },
-            }
+    def update_relayer(self, relayer_id: str, data: dict) -> dict:
+        initial_data = self.get_relayer(relayer_id)
 
-        response = self.post("relayers", payload)
+        if "policies" in data:
+            response = self.update_relayer_policies(relayer_id, data["policies"])
 
-        if not response.ok:
-            raise self.relayer_exception(response)
+            if len(data) == 1:
+                return self._handle_response(response)
 
-        return response.json()
+        payload = initial_data | data
+        response = self.put(f"relayers", payload)
 
-    def update_relayers(self):
-        pass
+        return self._handle_response(response)
 
-    def update_relayers_policy(self):
-        pass
+    def update_relayer_policies(self, relayer_id: str, data: dict):
+        initial_data = self.get_relayer(relayer_id)["policies"]
+        payload = initial_data | data
+        response = self.put(f"relayers/{relayer_id}", payload)
 
-    def create_relayer_key(self):
-        pass
+        return self._handle_response(response)
 
-    def delete_relayer_key(self):
-        pass
+    def delete_relayer_key(self, relayer_id: str, key_id: str):
+        response = self.delete(f"relayers/{relayer_id}/keys/{key_id}")
+
+        return self._handle_response(response)
 
 
 class RelayerClient(BaseClient):
@@ -180,13 +171,11 @@ class RelayerClient(BaseClient):
         aws_client_id: str = "1bpd19lcr33qvg5cr3oi79rdap",
         aws_srp_pool_region: str = "us-west-2",
     ):
-        super().__init__(
-            api_key,
-            api_secret,
-            aws_user_pool_id,
-            aws_client_id,
-            aws_srp_pool_region,
-        )
+        self.api_key = api_key
+        self.api_secret = api_secret
+        self.aws_user_pool_id = aws_user_pool_id
+        self.aws_client_id = aws_client_id
+        self.aws_srp_pool_region = aws_srp_pool_region
         self.base_api = "https://api.defender.openzeppelin.com/"
 
     def get_relayer(self):
