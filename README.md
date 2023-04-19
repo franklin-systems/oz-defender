@@ -68,7 +68,11 @@ $ git checkout my-new-feature-branch
 4. Commit and create your PR with a detailed description and tag the GitHub issue that your work addresses
 
 ### Testing `oz_defender` locally
-1. Update deps
+1. Install (if it's your first time) or update deps
+```bash
+$ poetry install
+```
+or
 ```bash
 $ poetry update
 ```
