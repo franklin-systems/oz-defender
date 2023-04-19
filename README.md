@@ -13,7 +13,23 @@ poetry add oz-defender
 ```
 
 ## Usage
-blah blah
+This packages is intended to mirror as much as possible the [defender-relay-client](https://github.com/OpenZeppelin/defender-client/tree/e19212ddd87ba1a82f831498340ab4e31734803f/packages/relay) JavaScript package to reduce confusion.
+
+For the [Relay API](https://docs.openzeppelin.com/defender/relay-api-reference#relay-client-module), used for administrating your team's relayers:
+```python
+from oz_defender.relay import RelayClient
+
+relay = RelayClient(api_key='defender-team-api-key', api_secret='defender-team-api-secret')
+relay.list_relayers()
+```
+
+For the [RelayerAPI](https://docs.openzeppelin.com/defender/relay-api-reference#relay-signer-module), used for transaction related operations with a specific relayer
+```python
+from oz_defender.relay import RelayerClient
+
+relayer = RelayerClient(api_key='relayer-api-key', api_secret='relayer-api-secret')
+relayer.list_transactions()
+```
 
 ## Contributing
 `oz-defender` is under active development so we welcome any and all contributions to improve the package!
@@ -45,5 +61,4 @@ pre-commit install
 ```bash
 git checkout my-new-feature-branch
 ```
-4. Commit and create your PR with a detailed description and tag the GitHub issue that your work addresses 
-
+4. Commit and create your PR with a detailed description and tag the GitHub issue that your work addresses
