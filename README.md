@@ -45,6 +45,8 @@ To make it as simple as possible for us to help you, please include the followin
 **NOTE: Unless the change you're making is minor, please open an issue in GitHub to discuss a change before opening a PR**
 
 ### Development
+This package is developed using [poetry](https://python-poetry.org/docs/). Make sure its installed on your machine and peep the documentation to familiarize yourself with its commands.
+
 1. Clone this repository
 ```bash
 $ git clone https://github.com/franklin-systems/oz-defender
