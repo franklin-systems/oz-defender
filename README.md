@@ -80,12 +80,13 @@ $ poetry update
 ```bash
 $ poetry shell
 ```
-3. Enter a python repl
+3. Enter a python REPL
 ```bash
 (oz-defender-py3.10) $ python3
 ```
 4. Import `oz_defender` and off you go
 ```python
 >>> from oz_defender import *
+>>> relayer = RelayerClient(api_key='relayer-api-key', api_secret='relayer-api-secret')
 ```
-5. Quite the python repl and re-initialize to pick up code changes as you develop
+5. Quit the python REPL and re-initialize to pick up code changes as you develop
