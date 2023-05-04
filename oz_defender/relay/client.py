@@ -6,6 +6,9 @@ from pycognito.utils import RequestsSrpAuth
 
 from .exceptions import RelayException, RelayTimeoutError
 
+BASE_RELAY_API = "https://defender-api.openzeppelin.com/relayer/"
+BASE_RELAYER_API = "https://api.defender.openzeppelin.com/"
+
 
 class BaseClient:
     def __init__(
@@ -15,12 +18,15 @@ class BaseClient:
         aws_user_pool_id: str,
         aws_client_id: str,
         aws_srp_pool_region: str,
+        base_api: str,
+        **kwargs,
     ):
         self.api_key = api_key
         self.api_secret = api_secret
         self.aws_user_pool_id = aws_user_pool_id
         self.aws_client_id = aws_client_id
         self.aws_srp_pool_region = aws_srp_pool_region
+        self.base_api = base_api
 
     @property
     def headers(self) -> dict:
@@ -126,8 +132,8 @@ class RelayClient(BaseClient):
             aws_user_pool_id,
             aws_client_id,
             aws_srp_pool_region,
+            BASE_RELAY_API,
         )
-        self.base_api = "https://defender-api.openzeppelin.com/relayer/"
 
     def get_relayer(self, relayer_id: str) -> requests.Response:
         response = self.get(f"relayers/{relayer_id}")
@@ -197,8 +203,8 @@ class RelayerClient(BaseClient):
             aws_user_pool_id,
             aws_client_id,
             aws_srp_pool_region,
+            BASE_RELAYER_API,
         )
-        self.base_api = "https://api.defender.openzeppelin.com/"
         self.json_rpc_request_id = json_rpc_request_id
 
     def get_relayer(self) -> requests.Response:
