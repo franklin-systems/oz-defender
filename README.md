@@ -26,7 +26,7 @@ relay = RelayClient(api_key='defender-team-api-key', api_secret='defender-team-a
 relay.list_relayers()
 ```
 
-For the [RelayerAPI](https://docs.openzeppelin.com/defender/relay-api-reference#relay-signer-module), used for transaction related operations with a specific relayer
+For the [Relayer API](https://docs.openzeppelin.com/defender/relay-api-reference#relay-signer-module), used for transaction related operations with a specific relayer
 ```python
 from oz_defender.relay import RelayerClient
 
