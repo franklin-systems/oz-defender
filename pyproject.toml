@@ -4,7 +4,7 @@ description = "OpenZeppelin Defender API client"
 
 [tool.poetry]
 name = "oz-defender"
-version = "0.0.2"
+version = "0.1.1"
 description = ""
 authors = ["Franklin Developers <developers@hellofranklin.co>"]
 license = "MIT"
